@@ -75,7 +75,7 @@ class tx_tagpack_api {
 	function getTagBoxSortingMode($pid = 0) {
 		static $sortingMode;
 		if (!$sortingMode) {
-			if (is_object($GLOBALS['TSFE'])) {
+			if (is_callable(array($GLOBALS['TSFE'], 'getPagesTSconfig'))) {
 				// get the storage PID in the frontend
 				$GLOBALS['TSFE']->getPagesTSconfig();
 				$sortingMode = $GLOBALS['TSFE']->pagesTSconfig['tx_tagpack_tags.']['tagBoxSortingMode'];
