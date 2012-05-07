@@ -20,6 +20,7 @@
 			<label index="tt_content.CType_pi1">Tag Cloud</label>
 			<label index="tt_content.CType_pi2">Tag Nominations</label>
 			<label index="tt_content.list_type_pi3">Tagged Elements</label>
+			<label index="tx_tagpack_tags.edit">Edit</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_tagpack_tags">Tags</label>

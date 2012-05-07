@@ -146,15 +146,27 @@
 		    'exclude' => 1,
 		    'label' => 'LLL:EXT:tagpack/locallang_db.xml:tx_tagpack_tags.relations',
 		    'config' => Array (
-			'type' => 'group',
-			'internal_type' => 'db',
-			'allowed' => '*',
-			'prepend_tname' => 1,
-			'size' => 8,
-			'minitems' => 0,
-			'maxitems' => 999999999,
-			'MM' => 'tx_tagpack_tags_relations_mm',
-		    )
+				'type' => 'group',
+				'internal_type' => 'db',
+				'allowed' => '*',
+				'prepend_tname' => 1,
+				'size' => 8,
+				'minitems' => 0,
+				'maxitems' => 999999999,
+				'MM' => 'tx_tagpack_tags_relations_mm',
+				'wizards' => array(
+					'_VALIGN' => 'top',
+					'edit' => array(
+						'type' => 'popup',
+						'title' => 'LLL:EXT:tagpack/locallang_db.xml:tx_tagpack_tags.edit',
+						'script' => 'wizard_edit.php',
+						'icon' => 'edit2.gif',
+						'popup_onlyOpenIfSelected' => 1,
+						'notNewRecords' => 1,
+						'JSopenParams' => 'height=500,width=800,status=0,menubar=0,scrollbars=1,resizable=yes'
+					),
+				),
+		    ),
 		),
 	    ),
 	    'types' => array (

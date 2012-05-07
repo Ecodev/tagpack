@@ -70,6 +70,7 @@ class tx_tagpack_tceforms_addtags {
 			$TCA[$table]['columns']['tx_tagpack_tags']['exclude'] = 0;
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['allowed'] = 'tx_tagpack_tags';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['prepend_tname'] = 0;
+			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards'] = array(); // Reset the wizards because we do not want the 'edit' icon
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['_VALIGN'] = 'top';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['type'] = 'userFunc';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['userFunc'] = 'tx_tagpack_ajaxsearch_client->renderAjaxSearch';
