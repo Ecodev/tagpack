@@ -345,7 +345,7 @@
 					/*$icon = t3lib_iconWorks::getIconImage($table, $row, '', 'title="'.t3lib_BEfunc::getRecordIconAltText($row, $table).'"');*/
 					$title = $label;
 					if(strpos($id,'tpm')===FALSE) {
-					    $onclick = 'setFormValueFromBrowseWin(\''.$fieldId.'\',\''.$value.'\',\''.$label.'\');return true;';
+					    $onclick = 'setFormValueFromBrowseWin(\''.$fieldId.'\',\''.$value.'\',\''. str_replace("'", "\\'", $label) .'\');return true;';
 					} else {
 					    $onclick = 'setTpmFormValue(this,\''.$title.'\');return true;';					
 					}
