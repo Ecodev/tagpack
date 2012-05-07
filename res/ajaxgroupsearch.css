@@ -48,9 +48,15 @@ dl.results dt {
 	padding:0;
 	font-weight:bold;
 	border-top:1px solid #CCC;
-	margin-top:0.2em;
-	padding-top:0.2em;
-	padding-bottom:0.2em;
+}
+
+dl.results dt.category
+{
+	display:block;
+	font-size: 1.2em;
+	font-weight: bold;
+	background: lightgrey;
+	padding:0.3em;
 }
 
 dl.results dt a img {
@@ -61,7 +67,7 @@ dl.results dt a img {
 dl.results dt a {
 	cursor:default;
 	display:block;
-	padding:1px 3px;
+	padding:5px 3px;
 	white-space:nowrap;
 	color:#666;
 }

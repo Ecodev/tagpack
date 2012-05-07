@@ -217,7 +217,7 @@
 					'tx_tagpack_tags LEFT JOIN tx_tagpack_categories ON (tx_tagpack_tags.category=tx_tagpack_categories.uid)'. $pageJoin,
 					join(' AND ', $conditions),
 					'',
-					'tx_tagpack_tags.name',
+					'categoryname, tx_tagpack_tags.name',
 					''
 				);
 				$res = $this->db->exec_SELECTquery($tagQuery[0], $tagQuery[1], $tagQuery[2], $tagQuery[3], $tagQuery[4], $tagQuery[5]);
@@ -226,7 +226,7 @@
 						$uidList .= $uidList ? ','.$row['uid'] : $row['uid'];
 					} else {
 						if(count($data)<=$limit) {
-							$data[$row['name']] = $row;
+							$data[] = $row;
 						}
 					}
 				}
@@ -298,7 +298,7 @@
 			if (0 == count($data))
 				return '<dt><em class="error">'.$LANG->getLL('ajaxgroupsearch_error_noTablesConfigured').'</em></dt>';
 			 
-			 
+			$previousCategory = null;
 			$content = '';
 			$fieldId = substr('data'.substr($id, strpos($id, '[')),0,-3);
 			foreach($data as $table => $rows) {
@@ -312,6 +312,13 @@
 					continue;
 				 
 				foreach ($rows as $row) {
+					
+					if (isset($row['categoryname']) && $previousCategory != $row['categoryname'])
+					{
+						$content .= '<dt class="category">' . $row['categoryname'] . '</dt>';
+						$previousCategory = $row['categoryname'];
+					}
+					
 					// build label
 					if ($config['label']) {
 						$label = htmlspecialchars(strip_tags($this->template($config['label'], $row)));

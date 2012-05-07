@@ -73,7 +73,7 @@ class tx_tagpack_tceforms_addtags {
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['_VALIGN'] = 'top';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['type'] = 'userFunc';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['userFunc'] = 'tx_tagpack_ajaxsearch_client->renderAjaxSearch';
-			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['params']['client']['startLength'] = 3;
+			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['params']['client']['startLength'] = 2;
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['searchFields'] = 'name';
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['enableDescriptorMode'] = $enableDescriptorMode ? TRUE : FALSE;
 			$TCA[$table]['columns']['tx_tagpack_tags']['config']['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['enabledOnly'] = true;
