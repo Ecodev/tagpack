@@ -21,7 +21,7 @@
 	*
 	*  This copyright notice MUST APPEAR in all copies of the script!
 	***************************************************************/
-	 
+
 	/**
 	* the ajax server for the "tagpack" extension.
 	* based on the "ajaxgroupsearch" extension.
@@ -31,7 +31,7 @@
 	* @package TYPO3
 	* @subpackage tagpack
 	*/
-	 
+
 	/*
 	* find home to /typo3/ and load init.php, so the whole api is loaded
 	*/
@@ -43,15 +43,15 @@
 	} else {
 		die('Unable to detect install location for '.$_SERVER['SCRIPT_NAME'].', none of <ul><li>typo3conf/ext</li><li>typo3/ext</li></ul>');
 	}
-	 
-	 
+
+
 	$BACK_PATH = '../../../typo3/';
-	 
+
 	require_once($BACK_PATH.'init.php');
 	require_once($BACK_PATH.'template.php');
-	 
+
 	$LANG->includeLLFile('EXT:tagpack/locallang.xml');
-	 
+
 	class tx_tagpack_ajaxsearch_server {
 		/**
 		* get a local reference to the db for convinience, that all for now
@@ -61,10 +61,10 @@
 		*/
 		function init() {
 			$this->db = $GLOBALS['TYPO3_DB'];
-			 
-			 
+
+
 		}
-		 
+
 		/**
 		* entry point: fetch the field-configuration for the request (by analyzing $_GET['id']) and calls
 		* the right function to serve the request (by a lookup in $_GET['function'], for now only 'groupsearch'
@@ -77,14 +77,14 @@
 			// scary, but splits $_GET['id'] in to the needed fields
 			$request['id'] = str_replace ('_ajaxsearch', '', $request['id']);
 			$idArr = array_map(array(&$this, 'trim'), t3lib_div::trimExplode('[', $request['id']));
-			
+
 			array_shift($idArr);
 			$this->parentTable = array_shift($idArr);
 			$this->uid = array_shift($idArr);
 			$this->field = array_shift($idArr);
 			$this->enableDescriptorMode = array_shift($idArr);
 			$this->flexPath = $idArr;
-			 
+
 			t3lib_div::loadTCA('tx_tagpack_tags');
 			// fetch the tca entry for this field,
 			// TODO: add support for flexforms
@@ -98,10 +98,12 @@
 			$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['searchFields'] = 'name';
 			$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['enableDescriptorMode'] = $this->enableDescriptorMode ? true : false;
 			$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['enabledOnly'] = true;
-			$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['additionalWhere'] = 'tx_tagpack_tags.pid IN('.$request['pid'].')';
+			if ($request['pid'] > 0) {
+				$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['additionalWhere'] = 'tx_tagpack_tags.pid IN('.$request['pid'].')';
+			}
 			$fieldConfig['wizards']['ajax_search']['params']['tables']['tx_tagpack_tags']['label'] = '###name###';
-			 
-			 
+
+
 			if ($fieldConfig['type'] == 'flex') {
 				$curRecord = t3lib_BEfunc::getRecord($this->parentTable, $this->uid);
 				$flexds = t3lib_BEfunc::getFlexFormDS($fieldConfig, $curRecord, $this->parentTable);
@@ -114,7 +116,7 @@
 				break;
 			}
 		}
-		 
+
 		/**
 		* helper for trimming the id-string, @see tx_tagpack_ajaxsearch_server::main
 		*
@@ -124,7 +126,7 @@
 		function trim($str) {
 			return rtrim($str, ']');
 		}
-		 
+
 		/**
 		* performs the search in all allowed tables, assemble the results and
 		* render them through @see tx_tagpack_ajaxsearch_server::renderResults
@@ -135,7 +137,7 @@
 		**/
 		function ajaxGroupSearch($request, $fieldConfig) {
 			global $LANG;
-			 
+
 			$searchWord = $request['value'];
 			$fieldId = $request['id'];
 			$tableConfig = $fieldConfig['wizards']['ajax_search']['params']['tables'];
@@ -161,14 +163,14 @@
 				break;
 				default:
 				return '<dt><em class="error">'.$LANG->getLL('ajaxgroupsearch_error_typeUnsupported').'</em>'.t3lib_div::debug($fieldConfig).'</dt>';
-				 
+
 			}
 			foreach ($lookupTables as $lookupTable) {
 				$data[$lookupTable] = $this->searchTable($lookupTable, $searchWord, $tableConfig[$lookupTable]);
 			}
 			return $this->renderResults($data, $tableConfig, $fieldId, $searchWord);
 		}
-		 
+
 		/**
 		* look up the search term in one table
 		*
@@ -181,13 +183,13 @@
 			if ($config === 0 || $config === '0')
 				return array();
 			$tableTCActrl = $GLOBALS['TCA'][$table]['ctrl'];
-			 
-			 
+
+
 			$conditions = array();
 			$searchFieldsCSV = $config['searchFields'] ? $config['searchFields'] :
 			$tableTCActrl['label'].','.$tableTCActrl['label_alt'];
 			$searchFields = t3lib_div::trimExplode(',', $searchFieldsCSV, 1);
-			 
+
 				// Access rights management
 				// Join to the pages table, if necessary (i.e. if user is not admin)
 			$pageJoin = '';
@@ -195,22 +197,22 @@
 				$conditions[] = $GLOBALS['BE_USER']->getPagePermsClause(1); //check read access
 				$pageJoin = ' JOIN pages ON (tx_tagpack_tags.pid = pages.uid)';
 			}
-			 
+
 			$data = array();
-			
+
 			$limit = intval($config['limit']) ? $config['limit'] : 1000;
-			
+
 			$conditions[] = '1=1'.t3lib_BEfunc::deleteClause($table);
-			 
+
 			if ($config['enabledOnly']) {
 				$conditions[] = '1=1'.t3lib_BEfunc::BEenableFields($table);
 			}
 			if ($config['additionalWhere']) {
 				$conditions[] = $config['additionalWhere'];
 			}
-			
+
 			$conditions[] = $this->db->searchQuery(array($searchWord), $searchFields, $table);
-			
+
 			if($config['enableDescriptorMode'] && $this->parentTable!='tx_tagpack_tags') {
 				$tagQuery = array(
 					'tx_tagpack_tags.*,tx_tagpack_categories.name AS categoryname',
@@ -240,7 +242,7 @@
 						$limit
 					);
 					$res = $this->db->exec_SELECTquery($tagQuery[0], $tagQuery[1], $tagQuery[2], $tagQuery[3], $tagQuery[4], $tagQuery[5]);
-					while ($row = $this->db->sql_fetch_assoc($res)) {						
+					while ($row = $this->db->sql_fetch_assoc($res)) {
 						if(count($data)<=$limit) {
 							$data[$row['name']] = is_array($data[$row['name']]) ? $data[$row['name']] : $row;
 							if($data[$row['name']]['subname'] != $row['subname']) {
@@ -276,12 +278,12 @@
 					$data[] = $row;
 				}
 			}
-			
+
 			ksort($data);
-			 
+
 			return $data;
 		}
-		 
+
 		/**
 		* render the results as list items
 		*
@@ -292,12 +294,12 @@
 		*/
 		function renderResults($data = array(), $tableConfig, $id, $searchWord) {
 			global $LANG;
-			 
+
 			$allowed = $GLOBALS['BE_USER']->check('tables_modify','tx_tagpack_tags');
 
 			if (0 == count($data))
 				return '<dt><em class="error">'.$LANG->getLL('ajaxgroupsearch_error_noTablesConfigured').'</em></dt>';
-			 
+
 			$previousCategory = null;
 			$content = '';
 			$fieldId = substr('data'.substr($id, strpos($id, '[')),0,-3);
@@ -307,30 +309,30 @@
 				$searchFieldsCSV = $config['searchFields'] ? $config['searchFields'] :
 				$tableTCActrl['label'].','.$tableTCActrl['label_alt'];
 				$searchFields = t3lib_div::trimExplode(',', $searchFieldsCSV, 1);
-				 
+
 				if (0 == count($rows))
 					continue;
-				 
+
 				foreach ($rows as $row) {
-					
+
 					if (isset($row['categoryname']) && $previousCategory != $row['categoryname'])
 					{
 						$content .= '<dt class="category">' . $row['categoryname'] . '</dt>';
 						$previousCategory = $row['categoryname'];
 					}
-					
+
 					// build label
 					if ($config['label']) {
 						$label = htmlspecialchars(strip_tags($this->template($config['label'], $row)));
 					} else {
 						$label = htmlspecialchars(strip_tags(t3lib_BEfunc::getRecordTitle($table, $row, 1)));
 					}
-					
+
 					if(strtolower($label)==strtolower($searchWord)) {
 					    $wordFound = true;
 					}
-					 
-					 
+
+
 					// build title as concatenation of all search fields (so you know why you found it)
 					if (is_array($searchFields)) {
 						$titles = array();
@@ -339,22 +341,22 @@
 						}
 						$title = htmlspecialchars(strip_tags(join(', ', $titles)));
 					}
-					 
+
 					// build js - value
-					 
-					 
-					 
+
+
+
 					$value = $row['uid'];
 					//use tableprefix if we serve multiple table
 					if ($this->prefixTables === true)
 						$value = $table.'_'.$row['uid'];
-					 
+
 					/*$icon = t3lib_iconWorks::getIconImage($table, $row, '', 'title="'.t3lib_BEfunc::getRecordIconAltText($row, $table).'"');*/
 					$title = $label;
 					if(strpos($id,'tpm')===FALSE) {
 					    $onclick = 'setFormValueFromBrowseWin(\''.$fieldId.'\',\''.$value.'\',\''. str_replace("'", "\\'", $label) .'\');return true;';
 					} else {
-					    $onclick = 'setTpmFormValue(this,\''.$title.'\');return true;';					
+					    $onclick = 'setTpmFormValue(this,\''.$title.'\');return true;';
 					}
 					$label = str_replace($searchWord,'<strong>'.$searchWord.'</strong>',$label);
 					$label = str_replace(ucwords($searchWord),'<strong>'.ucwords($searchWord).'</strong>',$label);
@@ -373,9 +375,9 @@
 				$content .= '<dt class="'.($allowed ? 'allowed' : 'forbidden').'"><em>'.($allowed ? $LANG->getLL('ajaxgroupsearch_error_noResults') : $LANG->getLL('ajaxgroupsearch_error_notAllowed')).'</em></dt>';
 			}
 			return $content;
-			 
+
 		}
-		 
+
 		/**
 		* a simple template function, used for generating userdefined labels
 		*
@@ -401,14 +403,14 @@
 			}
 		}
 	}
-	 
+
 	if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tagpack/class.tx_tagpack_ajaxsearch_server.php']) {
 		include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tagpack/class.tx_tagpack_ajaxsearch_server.php']);
 	}
-	 
+
 	$SOBE = t3lib_div::makeInstance('tx_tagpack_ajaxsearch_server');
 	$SOBE->init();
 	echo $SOBE->main(t3lib_div::_GET());
-	 
-	 
+
+
 ?>
