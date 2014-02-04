@@ -128,7 +128,7 @@ class tx_tagpack_tceforms_addtags
             // get the related records that are already assigned as tags to the current record
             $itemRows = tx_tagpack_api::getAttachedTagsForElement($row['uid'], $table, $row['pid']);
 
-            if (count($itemRows)) {
+            if ($itemRows) {
                 foreach ($itemRows as $key => $val) {
                     //create the option list
                     $optionList .= '<option value="' . $val['uid'] . '">' . $val['name'] . '</option>
@@ -176,7 +176,7 @@ class tx_tagpack_tceforms_addtags
         }
 
         // if there are any we can create an array and hand it over to the function which is responsible for the DB actions
-        if (count($selectedUids) > 0) {
+        if ($selectedUids) {
             $sortCounter = 0;
             foreach ($selectedUids as $selectedUid) {
                 // if there is a real uid we will use this as an array key and set the value to 1
@@ -279,7 +279,7 @@ class tx_tagpack_tceforms_addtags
 
                                 // first we get an array of the related tags for the old uid
                                 $current_MM_Rows = tx_tagpack_api::getAttachedTagsForElement($oldUid, $tablename);
-                                if (count($current_MM_Rows)) {
+                                if ($current_MM_Rows) {
 
                                     // now we can build the selectedTagUids array just as if somebody had selected the tags in a form
                                     $selectedTagUids = array();
@@ -311,7 +311,7 @@ class tx_tagpack_tceforms_addtags
                 $current_MM_Rows = tx_tagpack_api::getAttachedTagsForElement($id, $table);
 
                 // fill the selectedTagUids Array
-                if (count($current_MM_Rows)) {
+                if ($current_MM_Rows) {
                     $selectedTagUids = array();
                     foreach ($current_MM_Rows as $key => $valueArray) {
                         $selectedTagUids[$valueArray['uid_local']][0] = 1;
@@ -336,7 +336,7 @@ class tx_tagpack_tceforms_addtags
                 $current_MM_Rows = tx_tagpack_api::getAttachedTagIdsForElement($id, $table, FALSE, TRUE, TRUE);
 
                 // fill the selectedTagUid Array
-                if (count($current_MM_Rows)) {
+                if ($current_MM_Rows) {
                     foreach ($current_MM_Rows as $valueArray) {
                         $selectedTagUids[$valueArray['uid_local']][0] = 1;
                     }
@@ -387,7 +387,7 @@ class tx_tagpack_tceforms_addtags
         // delete some of them, if they have been removed from the parent record's tag list
         // or mark them as hidden, if the parent record itself has been hidden
         // or mark them as deleted, if the parent record itself has been deleted
-        if (count($current_MM_Rows)) {
+        if ($current_MM_Rows) {
             foreach ($current_MM_Rows as $key => $valueArray) {
                 $where = 'uid=' . intval($valueArray['uid_local']);
 
@@ -431,7 +431,7 @@ class tx_tagpack_tceforms_addtags
 								AND pid_foreign=' . $id);
 
                             // if there are any we can call this function with the command 'delete'
-                            if (count($sub_MM_Rows)) {
+                            if ($sub_MM_Rows) {
                                 foreach ($sub_MM_Rows as $subKey => $subValueArray) {
                                     $this->delete_update_insert_relations(
                                             array(), $subValueArray['tablenames'], intval($subValueArray['uid_foreign']), intval($id), 'delete', $caller, $level);
@@ -492,7 +492,7 @@ class tx_tagpack_tceforms_addtags
         // if there are still uids left in the selectedTagUids array
         // this means we have to create new relations for them
         // because they were not in the array of currently related tags before
-        if (count($selectedTagUids)) {
+        if ($selectedTagUids) {
             // for each of them we have to perform the same operations
             foreach ($selectedTagUids as $selectedUid => $switch) {
                 $sorting = intval($switch[1]);
@@ -506,7 +506,7 @@ class tx_tagpack_tceforms_addtags
         // if there are still uids left in the selectedTagUidsArray
         // this means we have to create new items and additional relations for them
         // because they didn't exist as a tag before
-        if (count($selectedTagUids)) {
+        if ($selectedTagUids) {
             $TSconfig = t3lib_befunc::getPagesTSconfig($pid);
             $getTagsFromPid = ($TSconfig['tx_tagpack_tags.']['getTagsFromPid'] ? 'AND pid=' . intval($TSconfig['tx_tagpack_tags.']['getTagsFromPid']) : '');
 

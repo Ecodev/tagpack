@@ -142,7 +142,7 @@ class tx_tagpack_api
     function tagExists($tagUid)
     {
         $existingTag = tx_tagpack_api::getTagDataById($tagUid);
-        return (count($existingTag) ? true : false);
+        return (bool) $existingTag;
     }
 
     /**
@@ -155,7 +155,7 @@ class tx_tagpack_api
     function tagNameExists($tagName)
     {
         $existingTag = tx_tagpack_api::getTagDataByTagName($tagName);
-        return (count($existingTag) ? true : false);
+        return (bool) $existingTag;
     }
 
     /**
@@ -463,7 +463,7 @@ class tx_tagpack_api
         if ($tagName && !$tagUid) {
             $tagData = tx_tagpack_api::getTagDataByTagName($tagName, '', 1, FALSE, FALSE, FALSE, $pid);
         }
-        if (!count($tagData) && !$tagUid) {
+        if (!$tagData && !$tagUid) {
             $tagUid = tx_tagpack_api::addTag($tagName, $pid, FALSE, $elementTable);
         } else if (!$tagUid) {
             $tagUid = $tagData['uid'];
