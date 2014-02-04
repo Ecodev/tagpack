@@ -297,10 +297,10 @@ class tx_tagpack_tceforms_addtags
                                     $this->delete_update_insert_relations(
                                             $selectedTagUids, $tablename, intval($newUid), intval($newPid), $command, $caller
                                     );
-                                };
-                            };
-                        };
-                    };
+                                }
+                            }
+                        }
+                    }
                 }
                 break;
 
@@ -348,7 +348,7 @@ class tx_tagpack_tceforms_addtags
                         $selectedTagUids, $table, intval($id), intval($valueArray['pid_foreign']), $command, $caller
                 );
                 break;
-        };
+        }
     }
 
     /**
@@ -378,7 +378,7 @@ class tx_tagpack_tceforms_addtags
         // first we get all the tags that were related to the current record before the upcoming actions
         if ($id === intval($id)) {
             $current_MM_Rows = tx_tagpack_api::getAttachedTagIdsForElement($id, $table, FALSE, TRUE, TRUE);
-        };
+        }
 
         // this one is needed to set the current crdate and tstamp values
         $timeNow = time();
@@ -410,8 +410,7 @@ class tx_tagpack_tceforms_addtags
                     }
 
                     // the new number of relations has to be saved back again
-                    $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                            tx_tagpack_api::tagTable, $where, $tagData);
+                    $GLOBALS['TYPO3_DB']->exec_UPDATEquery(tx_tagpack_api::tagTable, $where, $tagData);
 
                     // if the command has been 'delete'
                     if ($command == 'delete') {
@@ -473,12 +472,11 @@ class tx_tagpack_tceforms_addtags
                             $current_MM_Rows[$key]['sorting'] = intval($selectedTagUids[$valueArray['uid_local']][1]);
                         }
                     }
-                    // now we simply have to update all related tags with the valueArray we have built before
-                    $where = 'uid_local=' . intval($valueArray['uid_local']) . ' AND uid_foreign=' . intval($valueArray['uid_foreign']) . ' AND tablenames=\'' . $valueArray['tablenames'] . '\'';
-                    $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                            tx_tagpack_api::relationsTable, $where, $current_MM_Rows[$key]);
                 }
 
+                // update the relation to save whether it was hidden/unhidden/deleted/undeleted
+                $where = 'uid_local=' . intval($valueArray['uid_local']) . ' AND uid_foreign=' . intval($valueArray['uid_foreign']) . ' AND tablenames=\'' . $valueArray['tablenames'] . '\'';
+                $GLOBALS['TYPO3_DB']->exec_UPDATEquery(tx_tagpack_api::relationsTable, $where, $current_MM_Rows[$key]);
 
                 // if the uid is in the array of selected tags we have to remove it now
                 // to make sure, that it won't be inserted as a new relation in the next step

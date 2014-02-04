@@ -247,7 +247,7 @@ class tx_tagpack_ajaxsearch_server
                         $data[$row['name']] = is_array($data[$row['name']]) ? $data[$row['name']] : $row;
                         if ($data[$row['name']]['subname'] != $row['subname']) {
                             $data[$row['name']]['subname'] .= $data[$row['name']]['subname'] ? '<br />' . $row['subname'] : $row['subname'];
-                        };
+                        }
                     }
                 }
             }
