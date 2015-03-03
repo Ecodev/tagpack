@@ -75,7 +75,7 @@ class tx_tagpack_api
      * @param	int	$pid	the uid of the page where the tsconfig is stored, needed for the backend
      * @return	int		the sorting mode of the tag box
      */
-    function getTagBoxSortingMode($pid = 0)
+    static function getTagBoxSortingMode($pid = 0)
     {
         static $sortingMode;
         if (!$sortingMode) {
@@ -330,7 +330,7 @@ class tx_tagpack_api
      * @param	bool	$showDeleted	a flag whether deleted records should be shown as well
      * @return	array			an array containing all tag UIDs
      */
-    function getAttachedTagIdsForElement($elementUid, $elementTable, $uidOnly = FALSE, $showHidden = FALSE, $showDeleted = FALSE)
+    static function getAttachedTagIdsForElement($elementUid, $elementTable, $uidOnly = FALSE, $showHidden = FALSE, $showDeleted = FALSE)
     {
         $tagUidQuery = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*', tx_tagpack_api::relationsTable, 'tablenames = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($elementTable, tx_tagpack_api::relationsTable)
@@ -360,7 +360,7 @@ class tx_tagpack_api
      * @param	string	$elementTable	the table of the element
      * @return	array			a multi-dimensional array containing all tagdata infos
      */
-    function getAttachedTagsForElement($elementUid, $elementTable, $pid = 0)
+    static function getAttachedTagsForElement($elementUid, $elementTable, $pid = 0)
     {
         $sortingMode = tx_tagpack_api::getTagBoxSortingMode(intval($pid));
         switch ($sortingMode) {
