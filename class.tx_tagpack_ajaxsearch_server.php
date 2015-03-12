@@ -47,7 +47,6 @@ if (preg_match('#/(typo3conf/ext)/?#', $_SERVER['SCRIPT_NAME'], $matches)) {
 $BACK_PATH = '../../../typo3/';
 
 require_once($BACK_PATH . 'init.php');
-require_once($BACK_PATH . 'template.php');
 
 $LANG->includeLLFile('EXT:tagpack/locallang.xml');
 
