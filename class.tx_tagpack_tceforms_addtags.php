@@ -212,20 +212,20 @@ class tx_tagpack_tceforms_addtags
         $collectedValue = false;
         foreach ($valuesArray as $value) {
             switch (true) {
-                //matching a new tag with no comma in it (thus starts with 'new_|' and ends with '|'):
-                case preg_match('/^new_\|[^\|]*\|$/', trim($value)) === 1:
-                    $return[] = preg_replace('/^new_\|([^\|]*)\|$/', 'new_\\1', trim($value));
+                //matching a new tag with no comma in it (thus starts with 'new_~|' and ends with '~'):
+                case preg_match('/^new_~[^~]*~$/', trim($value)) === 1:
+                    $return[] = preg_replace('/^new_~([^~]*)~$/', 'new_\\1', trim($value));
                     break;
                 //matching the begin of a new tag that contained a comma:
-                case preg_match('/^new_\|[^\|]*$/', $value) === 1:
-                    $collectedValue = preg_replace('/^new_\|([^\|]*)$/', '\\1', $value);
+                case preg_match('/^new_~[^~]*$/', $value) === 1:
+                    $collectedValue = preg_replace('/^new_~([^~]*)$/', '\\1', $value);
                     break;
                 //matching the middle part of a new tag, that contained more than one comma:
-                case $collectedValue !== false && strpos($value, '|') === false:
+                case $collectedValue !== false && strpos($value, '~') === false:
                     $collectedValue .= ',' . $value;
                     break;
                 //matching the end of a new tag that contained a comma:
-                case $collectedValue !== false && preg_match('/\|$/', trim($value)) === 1:
+                case $collectedValue !== false && preg_match('/~$/', trim($value)) === 1:
                     $collectedValue .= ',' . str_replace('|', '', $value);
                     $return[] = 'new_' . trim($collectedValue);
                     $collectedValue = false;
