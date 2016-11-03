@@ -1,6 +1,5 @@
 {
     "name": "ecodev/tagpack",
-    "version": "0.13.0",
     "type": "typo3-cms-extension",
     "description": "All purpose tagging suite. Use tags for almost any allowed table without having to create new DB fields for each of them. Create multifunctional tag clouds using surf or filter mode together with time based settings, a tag breadcrumb menu and a searchbox with autocompletion.",
     "homepage": "https://github.com/ecodev/tagpack",
